@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+   <title>University System - Enrollment</title>
+   <h:outputStylesheet name="studentstyle.css" library="Css"/>
+</h:head>
+
+<h:body>
+
+   <!-- Menubar -->
+   <p:menubar styleClass="custom-menubar">
+      <p:menuitem value="Students" url="Students.xhtml"/>
+      <p:menuitem value="Courses" url="Courses.xhtml"/>
+      <p:menuitem value="Enrollment" url="Enrollment.xhtml"/>
+      <p:menuitem value="Semester" url="Semester.xhtml"/>
+      <p:menuitem value="Faculties" url="Faculty.xhtml"/>
+      <p:menuitem value="Majors" url="Major.xhtml"/>
+   </p:menubar>
+
+   <br/>
+
+   <!-- Add New Enrollment Button -->
+   <h:form>
+      <p:commandButton value="Add New Enrollment"
+                       action="#{enrollmentBean.resetForm}"
+                       update=":createEnrollmentForm"
+                       oncomplete="PF('enrollmentDialog').show();"
+                       styleClass="ui-button-success"/>
+   </h:form>
+
+   <hr/>
+
+   <!-- Create/Edit Enrollment Dialog -->
+   <p:dialog id="createEnrollmentDialog" header="Enrollment Details"
+             widgetVar="enrollmentDialog" modal="true" resizable="false"
+             closable="true" style="width:400px; max-height:75vh; overflow-y:auto;">
+      <h:form id="createEnrollmentForm">
+         <h:panelGrid columns="2" columnClasses="label,field" cellpadding="5">
+
+            <h:outputLabel for="student" value="Student:"/>
+            <p:selectOneMenu id="student" value="#{enrollmentBean.selectedStudentId}" required="true">
+               <f:selectItem itemLabel="-- Select Student --" itemValue="#{null}" noSelectionOption="true"/>
+               <f:selectItems value="#{enrollmentBean.studentList}" var="s"
+                              itemLabel="#{s.name}" itemValue="#{s.id}"/>
+            </p:selectOneMenu>
+
+            <h:outputLabel for="course" value="Course:"/>
+            <p:selectOneMenu id="course" value="#{enrollmentBean.selectedCourseId}" required="true">
+               <f:selectItem itemLabel="-- Select Course --" itemValue="#{null}" noSelectionOption="true"/>
+               <f:selectItems value="#{enrollmentBean.coursesList}" var="c"
+                              itemLabel="#{c.name}" itemValue="#{c.id}"/>
+            </p:selectOneMenu>
+
+            <h:outputLabel for="semester" value="Semester:"/>
+            <p:selectOneMenu id="semester" value="#{enrollmentBean.selectedSemesterId}" required="true">
+               <f:selectItem itemLabel="-- Select Semester --" itemValue="#{null}" noSelectionOption="true"/>
+               <f:selectItems value="#{enrollmentBean.semesterList}" var="sem"
+                              itemLabel="#{sem.name}" itemValue="#{sem.id}"/>
+            </p:selectOneMenu>
+
+            <h:outputLabel for="grades" value="Grade:"/>
+            <p:selectOneMenu id="grades" value="#{enrollmentBean.selectedGrade}">
+               <f:selectItem itemLabel="-- Select Grade --" itemValue="#{null}" noSelectionOption="true"/>
+               <f:selectItems value="#{enrollmentBean.gradesList}" var="g"
+                              itemLabel="#{g}" itemValue="#{g}"/>
+            </p:selectOneMenu>
+         </h:panelGrid>
+
+         <div style="margin-top:15px; display:flex; justify-content:center; gap:10px;">
+            <p:commandButton value="Save"
+                             action="#{enrollmentBean.saveEnrollment}"
+                             process="@form"
+                             update=":enrollmentForm:enrollmentsTable :createEnrollmentForm"
+                             oncomplete="if(!args.validationFailed) PF('enrollmentDialog').hide();"
+                             styleClass="ui-button-success"/>
+
+            <p:commandButton value="Clear"
+                             action="#{enrollmentBean.resetForm}"
+                             update="createEnrollmentForm"
+                             styleClass="ui-button-secondary"/>
+         </div>
+      </h:form>
+   </p:dialog>
+
+   <!-- Student Filter + Enrollment Table -->
+   <h:form id="enrollmentForm">
+
+      <!-- Student filter dropdown -->
+      <p:panel header="Filter by Student" style="margin-bottom:15px;">
+         <p:selectOneMenu id="studentFilter" value="#{enrollmentBean.selectedStudentId}" style="width:300px">
+            <f:selectItem itemLabel="-- All Students --" itemValue="#{null}" noSelectionOption="true"/>
+            <f:selectItems value="#{enrollmentBean.studentList}" var="s"
+                           itemLabel="#{s.name}" itemValue="#{s.id}"/>
+            <p:ajax listener="#{enrollmentBean.loadEnrollmentsForStudent}"
+                    update="enrollmentsTable"/>
+         </p:selectOneMenu>
+      </p:panel>
+
+      <!-- Enrollment Table -->
+      <p:dataTable id="enrollmentsTable" value="#{enrollmentBean.enrollmentList}" var="enr"
+                   styleClass="custom-datatable" rowHover="true" paginator="true" rows="10"
+                   responsiveLayout="scroll">
+
+         <p:column headerText="ID">#{enr.id}</p:column>
+         <p:column headerText="Student">#{enr.student.name}</p:column>
+         <p:column headerText="Course">#{enr.courses.name}</p:column>
+         <p:column headerText="Semester">#{enr.semester.name}</p:column>
+         <p:column headerText="Date">#{enr.enrollmentDate}</p:column>
+         <p:column headerText="Grade">#{enr.grades}</p:column>
+
+         <p:column headerText="Actions">
+            <p:commandButton icon="pi pi-pencil" title="Edit"
+                             actionListener="#{enrollmentBean.setSelectedEnrollment(enr)}"
+                             update=":createEnrollmentForm"
+                             oncomplete="PF('enrollmentDialog').show();"
+                             styleClass="ui-button-warning" />
+
+            <p:commandButton icon="pi pi-trash" title="Delete"
+                             actionListener="#{enrollmentBean.deleteEnrollment(enr)}"
+                             update=":enrollmentForm:enrollmentsTable"
+                             styleClass="ui-button-danger" />
+         </p:column>
+      </p:dataTable>
+   </h:form>
+
+</h:body>
+</html>

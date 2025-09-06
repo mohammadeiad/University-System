@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+   <title>University System - Majors</title>
+   <h:outputStylesheet name="studentstyle.css" library="Css"/>
+</h:head>
+
+<h:body>
+
+   <!-- Menubar -->
+   <p:menubar styleClass="custom-menubar">
+      <p:menuitem value="Students" url="Students.xhtml"/>
+      <p:menuitem value="Courses" url="Courses.xhtml"/>
+      <p:menuitem value="Enrollment" url="Enrollment.xhtml"/>
+      <p:menuitem value="Semester" url="Semester.xhtml"/>
+      <p:menuitem value="Faculties" url="Faculty.xhtml"/>
+      <p:menuitem value="Majors" url="Major.xhtml"/>
+   </p:menubar>
+
+   <h:form id="mainForm">
+      <br/>
+
+      <!-- Add Major Button -->
+      <p:commandButton value="Add New Major"
+                       actionListener="#{majorBean.resetForm}"
+                       update=":majorForm"
+                       oncomplete="PF('majorDialog').show();"
+                       styleClass="ui-button-success"/>
+
+      <hr/>
+
+      <!-- Major Table -->
+      <p:dataTable id="majorTable" value="#{majorBean.majorList}" var="major"
+                   rows="10" rowHover="true" responsiveLayout="scroll">
+
+         <p:column headerText="ID">#{major.id}</p:column>
+         <p:column headerText="Name">#{major.name}</p:column>
+
+         <!-- Actions -->
+         <p:column headerText="Actions">
+            <p:commandButton icon="pi pi-pencil" title="Edit"
+                             actionListener="#{majorBean.editMajor(major)}"
+                             update=":majorForm"
+                             oncomplete="PF('majorDialog').show();"
+                             styleClass="ui-button-warning"/>
+
+            <p:commandButton icon="pi pi-trash" title="Delete"
+                             actionListener="#{majorBean.deleteMajor(major)}"
+                             update=":mainForm:majorTable"
+                             onclick="return confirm('Are you sure you want to delete this major?');"
+                             styleClass="ui-button-danger"/>
+         </p:column>
+      </p:dataTable>
+   </h:form>
+
+   <!-- Add/Edit Dialog -->
+   <p:dialog header="Add/Edit Major" widgetVar="majorDialog"
+             modal="true" resizable="false" width="400">
+      <h:form id="majorForm">
+         <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel for="name" value="Name:"/>
+            <h:inputText id="name" value="#{majorBean.selectedMajor.name}" required="true"/>
+         </h:panelGrid>
+
+         <p:commandButton value="Save"
+                          action="#{majorBean.saveMajor}"
+                          update=":mainForm:majorTable"
+                          oncomplete="PF('majorDialog').hide();"
+                          styleClass="ui-button-success"/>
+      </h:form>
+   </p:dialog>
+
+</h:body>
+</html>

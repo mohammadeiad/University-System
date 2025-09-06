@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Nationalities</title>
+    <h:outputStylesheet name="studentstyle.css" library="Css"/>
+</h:head>
+<h:body>
+
+    <h:form id="menuForm">
+        <!-- Menu Bar -->
+
+        <p:menubar styleClass="custom-menubar">
+            <p:menuitem value="Students" url="Students.xhtml"/>
+            <p:menuitem value="Courses" url="Courses.xhtml"/>
+            <p:menuitem value="Enrollment" url="Enrollment.xhtml"/>
+            <p:menuitem value="Semester" url="Semester.xhtml"/>
+            <p:menuitem value="Faculties" url="Faculty.xhtml"/>
+            <p:menuitem value="Majors" url="Major.xhtml"/>
+            <p:menuitem value="Nationalities" url="Nationality.xhtml"/>
+        </p:menubar>
+    </h:form>
+
+    <h:form id="mainForm">
+        <p:messages id="msgs" showSummary="true" showDetail="true" autoUpdate="true" closable="true"/>
+        <br/>
+
+        <!-- Add New Nationality -->
+        <p:commandButton value="Add New Nationality"
+                         actionListener="#{nationalityBean.prepareAdd}"
+                         update=":dlgForm"
+                         oncomplete="PF('natDlg').show();"
+                         styleClass="ui-button-success" />
+
+        <p:spacer height="10"/>
+
+        <p:dataTable id="table" value="#{nationalityBean.list}" var="n" rows="10" rowHover="true">
+            <p:column headerText="ID" style="width:80px">#{n.id}</p:column>
+            <p:column headerText="Name">#{n.name}</p:column>
+
+            <!-- Actions Column -->
+            <p:column headerText="Actions" style="width:170px">
+                <p:commandButton icon="pi pi-pencil" title="Edit"
+                                 actionListener="#{nationalityBean.edit(n)}"
+                                 update=":dlgForm"
+                                 oncomplete="PF('natDlg').show();"
+                                 styleClass="ui-button-warning" />
+                <p:spacer width="8"/>
+                <p:commandButton icon="pi pi-trash" title="Delete"
+                                 actionListener="#{nationalityBean.delete(n)}"
+                                 update=":mainForm:table :mainForm:msgs"
+                                 onclick="return confirm('Delete this nationality?');"
+                                 styleClass="ui-button-danger" />
+            </p:column>
+        </p:dataTable>
+    </h:form>
+
+    <!-- Add/Edit dialog -->
+    <p:dialog header="Nationality" widgetVar="natDlg" modal="true" resizable="false" width="420">
+        <h:form id="dlgForm">
+            <h:panelGrid columns="2" cellpadding="6" style="width:100%">
+                <h:outputLabel for="name" value="Name:"/>
+                <p:inputText id="name" value="#{nationalityBean.selected.name}" required="true" style="width:100%"/>
+            </h:panelGrid>
+
+            <p:commandButton value="Save"
+                             actionListener="#{nationalityBean.save}"
+                             process="@form"
+                             update=":mainForm:table :mainForm:msgs"
+                             oncomplete="PF('natDlg').hide();"
+                             style="margin-top:10px"/>
+        </h:form>
+    </p:dialog>
+
+</h:body>
+</html>

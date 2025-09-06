@@ -1,0 +1,67 @@
+/* General Body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(244, 241, 241);
+    margin: 20px;
+}
+
+/* Menubar Styling */
+.custom-menubar {
+    background-color: #6e83ff !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.custom-menubar .ui-menuitem-link {
+    color: white !important;
+}
+
+.custom-menubar .ui-menuitem-link:hover {
+    background-color: #5a6fd0 !important;
+}
+
+/* PrimeFaces DataTable Wrapper */
+.courses-table.custom-datatable .ui-datatable-tablewrapper table {
+    width: 100% !important;
+    background-color: white !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-size: 14px;
+}
+
+/* Table Header */
+.courses-table .ui-datatable-header,
+.courses-table .ui-datatable-thead th,
+.courses-table .ui-widget-header {
+    background-color: #6e83ff !important;
+    color: white !important;
+    font-weight: bold;
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid #ddd !important;
+}
+
+/* Table Cells */
+.courses-table .ui-datatable-data td,
+.courses-table .ui-widget-content td {
+    color: #333 !important;
+    padding: 8px 10px;
+    border: 1px solid #ddd !important;
+}
+
+/* Zebra Rows */
+.courses-table .ui-datatable-data tr.ui-datatable-even,
+.courses-table .ui-widget-content.ui-datatable-even {
+    background-color: #f2f2f2 !important;
+}
+
+.courses-table .ui-datatable-data tr.ui-datatable-odd,
+.courses-table .ui-widget-content.ui-datatable-odd {
+    background-color: #ffffff !important;
+}
+
+/* Hover Effect */
+.courses-table .ui-datatable-data tr:hover,
+.courses-table .ui-widget-content:hover {
+    background-color: #d1ecf1 !important;
+    cursor: pointer;
+}
